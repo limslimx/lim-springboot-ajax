@@ -7,4 +7,5 @@ public class MemberDto {
 
     private String name;
     private String age;
+    private String test;
 }

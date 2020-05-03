@@ -24,4 +24,14 @@ public class MemberController {
         log.info(this.getClass().getName() + ".memberInfo end!");
         return memberDtoList;
     }
+
+    @PostMapping("/member/info2")
+    public MemberDto memberInfo2(@RequestBody MemberDto memberDto) {
+        log.info(this.getClass().getName() + ".memberInfo2 start!");
+
+        if (memberDto.getAge().equals("20")) {
+            memberDto.setTest("success");
+        }
+        return memberDto;
+    }
 }
