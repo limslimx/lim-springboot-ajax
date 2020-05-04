@@ -15,7 +15,7 @@ public class MemberController {
     private Logger log = Logger.getLogger(String.valueOf(this.getClass()));
 
     @PostMapping("/member/info")
-    public List<MemberDto> memberInfo(@RequestBody MemberDto memberDto){
+    public List<MemberDto> memberInfo(@RequestBody MemberDto memberDto) {
         log.info(this.getClass().getName() + ".memberInfo start!");
 
         List<MemberDto> memberDtoList = new ArrayList<>();
