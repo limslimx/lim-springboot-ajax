@@ -1,37 +1,75 @@
 package com.lim.springboot.test.web;
 
+import com.lim.springboot.test.service.MemberService;
 import com.lim.springboot.test.web.dto.MemberDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
-@RestController
+@RequiredArgsConstructor
+@Controller
 public class MemberController {
 
     private Logger log = Logger.getLogger(String.valueOf(this.getClass()));
+    private final MemberService memberService;
 
-    @PostMapping("/member/info")
-    public List<MemberDto> memberInfo(@RequestBody MemberDto memberDto) {
-        log.info(this.getClass().getName() + ".memberInfo start!");
-
-        List<MemberDto> memberDtoList = new ArrayList<>();
-        memberDtoList.add(memberDto);
-
-        log.info(this.getClass().getName() + ".memberInfo end!");
-        return memberDtoList;
+    //메인 페이지
+    @GetMapping("/")
+    public String index() {
+        log.info(this.getClass().getName() + ".index start!");
+        return "/index";
     }
 
-    @PostMapping("/member/info2")
-    public MemberDto memberInfo2(@RequestBody MemberDto memberDto) {
-        log.info(this.getClass().getName() + ".memberInfo2 start!");
-
-        if (memberDto.getAge().equals("20")) {
-            memberDto.setTest("success");
-        }
-        return memberDto;
+    //회원가입 페이지
+    @GetMapping("/user/signup")
+    public String dispSignup() {
+        return "/signup";
     }
+
+    //회원가입 처리
+    @PostMapping("/user/signup")
+    public String execSignup(MemberDto memberDto) {
+        memberService.joinUser(memberDto);
+        return "redirect:/user/login";
+    }
+
+    //로그인 페이지
+    @GetMapping("/user/login")
+    public String dispLogin() {
+        return "/login";
+    }
+
+    //로그인 결과 페이지
+    @GetMapping("/user/login/result")
+    public String dispLoginResult() {
+        return "/loginSuccess";
+    }
+
+    //로그아웃 결과 페이지
+    @GetMapping("/user/logout/result")
+    public String dispLogout() {
+        return "/logout";
+    }
+
+    //접근 거부 페이지
+    @GetMapping("/user/denied")
+    public String dispDenied() {
+        return "/denied";
+    }
+
+    //내 정보 페이지
+    @GetMapping("/user/info")
+    public String dispMyInfo() {
+        return "/myinfo";
+    }
+
+    //어드민 페이지
+    @GetMapping("/admin")
+    public String dispAdmin() {
+        return "/admin";
+    }
+
 }

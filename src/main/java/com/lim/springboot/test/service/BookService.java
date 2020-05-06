@@ -11,4 +11,9 @@ public class BookService {
     public BookService(BookRepository bookRepository) {
         this.bookRepository=bookRepository;
     }
+
+//    @Autowired(required = false)
+//    public void setBookRepository(BookRepository bookRepository) {
+//        this.bookRepository = bookRepository;
+//    }
 }
