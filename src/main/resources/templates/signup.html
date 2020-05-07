@@ -11,15 +11,18 @@
 
 <div class="col-md-12">
     <div class="col-md-4">
-        <form th:action="@{/user/signup}" method="post">
+        <form th:action="@{/user/signup}" method="post" modelAttribute="memberDto">
             <div class="form-group">
-                <input type="text" name="uId" class="form-control" placeholder="아이디 입력해주세요.">
+                <input type="text" name="uId" th:value="${memberDto.uId}" class="form-control" placeholder="아이디 입력해주세요.">
+                <span th:text="${valid_uId}"></span>
             </div>
             <div class="form-group">
-                <input type="text" name="email" class="form-control" placeholder="이메일 입력해주세요.">
+                <input type="text" name="email" th:value="${memberDto.email}" class="form-control" placeholder="이메일 입력해주세요.">
+                <span th:text="${valid_email}"></span>
             </div>
             <div class="form-group">
                 <input type="password" name="password" class="form-control" placeholder="비밀번호 입력해주세요.">
+                <span th:text="${valid_password}"></span>
             </div>
             <a href="/" role="button" class="btn btn-secondary">취소</a>
             <button type="submit" class="btn btn-primary">가입하기</button>

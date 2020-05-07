@@ -4,20 +4,18 @@ import com.lim.springboot.test.domain.Member;
 import com.lim.springboot.test.service.MemberRepository;
 import com.lim.springboot.test.service.MemberService;
 import com.lim.springboot.test.web.dto.MemberDto;
-import com.lim.springboot.test.web.dto.SessionUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 @RequiredArgsConstructor
@@ -31,14 +29,24 @@ public class MemberController {
 
     //회원가입 페이지
     @GetMapping("/user/signup")
-    public String signUpForm() {
-        log.info(this.getClass().getName()+".dispSignup start!");
+    public String signUpForm(MemberDto memberDto) {
+        log.info(this.getClass().getName()+".signUpForm start!");
         return "/signup";
     }
 
     //회원가입 처리
     @PostMapping("/user/signup")
-    public String signUp(MemberDto memberDto) {
+    public String signUp(@Valid MemberDto memberDto, Errors errors, Model model) {
+        if (errors.hasErrors()) {
+            model.addAttribute("memberDto", memberDto);
+            Map<String, String> validatorResult = memberService.validateHandling(errors);
+            for (String key : validatorResult.keySet()) {
+                log.info(key);
+                model.addAttribute(key, validatorResult.get(key));
+            }
+
+            return "/signup";
+        }
         log.info(this.getClass().getName() + ".signUp start!");
         log.info(this.getClass().getName() + ".uId: " + memberDto.getUId());
         log.info(this.getClass().getName() + ".email: " + memberDto.getEmail());
@@ -81,9 +89,7 @@ public class MemberController {
         String name = principal.getName();
         Optional<Member> byuId = memberRepository.findByuId(name);
         log.info("byuId = " + byuId);
-        model.addAttribute("uId", byuId.get().getUId());
-        model.addAttribute("email", byuId.get().getEmail());
-        model.addAttribute("role", byuId.get().getRole());
+        model.addAttribute("member", byuId.get());
         return "/myinfo";
     }
 

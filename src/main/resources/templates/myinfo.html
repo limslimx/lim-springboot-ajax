@@ -7,8 +7,10 @@
 <body>
 <h1>내정보 확인 페이지입니다.</h1>
 <hr>
-아이디: <span th:text="${uId}"></span><br/>
-이메일: <span th:text="${email}"></span><br/>
-회원상태: <span th:text="${role}"></span>
+<div modelAttribute="member">
+아이디: <span th:text="${member.uId}"></span><br/>
+이메일: <span th:text="${member.email}"></span><br/>
+회원상태: <span th:text="${member.role}"></span>
+</div>
 </body>
 </html>
