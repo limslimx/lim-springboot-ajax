@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>회원가입 페이지</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
@@ -13,21 +15,103 @@
     <div class="col-md-4">
         <form th:action="@{/user/signup}" method="post" modelAttribute="memberDto">
             <div class="form-group">
-                <input type="text" name="uId" th:value="${memberDto.uId}" class="form-control" placeholder="아이디 입력해주세요.">
-                <span th:text="${valid_uId}"></span>
+                <input type="text" id="uId" name="uId" th:value="${memberDto.uId}" class="form-control" placeholder="아이디 입력해주세요.">
+                <span id="uId_msg" th:text="${valid_uId}"></span>
             </div>
             <div class="form-group">
-                <input type="text" name="email" th:value="${memberDto.email}" class="form-control" placeholder="이메일 입력해주세요.">
-                <span th:text="${valid_email}"></span>
+                <input type="text" id="email" name="email" th:value="${memberDto.email}" class="form-control" placeholder="이메일 입력해주세요.">
+                <span id="email_msg" th:text="${valid_email}"></span>
             </div>
             <div class="form-group">
                 <input type="password" name="password" class="form-control" placeholder="비밀번호 입력해주세요.">
                 <span th:text="${valid_password}"></span>
+            </div>
+            <div class="form-group">
+                <input type="password" name="passwordCheck" class="form-control" placeholder="비밀번호 입력해주세요.">
+                <span th:text="${valid_passwordCheck}"></span>
             </div>
             <a href="/" role="button" class="btn btn-secondary">취소</a>
             <button type="submit" class="btn btn-primary">가입하기</button>
         </form>
     </div>
 </div>
+<script src="/js/app/jquery-3.5.0.min.js"></script>
+<script>
+    var index = {
+        init: function () {
+            var _this = this;
+            $("#uId").on("input", function () {
+                _this.checkUId();
+            });
+            $("#email").on("input", function () {
+                _this.checkEmail();
+            });
+        },
+        checkUId: function () {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            var uId = $("#uId").val();
+            if (uId == "") {
+                $("#uId_msg").text("아이디를 입력해주세요.").attr("style", "color:red");
+            }
+
+            $.ajax({
+                type: "post",
+                url: "/user/signup/checkId",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: uId,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (result) {
+                    console.log(result);
+                    if (result == 0) {
+                        $("#uId_msg").text("이미 존재하는 아이디입니다.").attr("style", "color:red");
+                    } else if(result == 1){
+                        $("#uId_msg").text("사용가능한 아이디입니다.").attr("style", "color:green");
+                    }
+                },fail: function (error) {
+                    alert(error);
+                }
+            });
+        },
+        checkEmail: function () {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            var emailCheck = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+            var email = $("#email").val();
+            if (email == "") {
+                $("#email_msg").text("이메일을 입력해주세요.").attr("style", "color:red");
+            }
+
+            $.ajax({
+                type: "post",
+                url: "/user/signup/checkEmail",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: email,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (result) {
+                    if (!emailCheck.test(email)) {
+                        $("#email_msg").text("이메일을 형식에 맞게 입력해주세요.").attr("style", "color:red");
+                    }else{
+
+                    if (result == 0) {
+                        $("#email_msg").text("이미 존재하는 이메일입니다.").attr("style", "color:red");
+                    } else if(result==1){
+                        $("#email_msg").text("사용가능한 이메일입니다.").attr("style", "color:green");
+                    }
+                    }
+                },fail: function (error) {
+                    alert(error);
+                }
+            });
+        }
+    };
+    index.init();
+</script>
 </body>
 </html>

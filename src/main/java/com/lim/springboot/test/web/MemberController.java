@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -57,6 +59,34 @@ public class MemberController {
         log.info(this.getClass().getName() + ".signUp end!");
 
         return "redirect:/user/login";
+    }
+
+    //회원가입 유효성 검사 - 아이디
+    @PostMapping("/user/signup/checkId")
+    public @ResponseBody int checkId(@RequestBody String uId) {
+        log.info(this.getClass().getName() + ".checkId start!");
+
+        int count = memberRepository.countMemberByUId(uId);
+        log.info(this.getClass().getName() + ".checkId end!");
+        if (count == 0) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    //회원가입 유효성 검사 - 이메일
+    @PostMapping("/user/signup/checkEmail")
+    public @ResponseBody int checkEmail(@RequestBody String email) {
+        log.info(this.getClass().getName() + ".checkEmail start!");
+
+        int count = memberRepository.countMemberByEmail(email);
+        log.info(this.getClass().getName() + ".checkEmail end!");
+        if (count == 0) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     //로그인 페이지
