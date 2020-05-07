@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests() //HttpServletRequest에 따라 접근을 제한함
                 .antMatchers("/admin/**").hasRole("ADMIN") //antMatchers() 메서드로 특정 경로를 지정하며 permitAll(), hasRole() 메서드로 역할에 따른 접근 설정을 잡아줌
-                .antMatchers("/user/myinfo").hasRole("MEMBER") //anyRequest().authenticated()는 모든 요청에 대해 인증된 사용자만 접근할 수 있도록 함
+                .antMatchers("/user/info").hasRole("MEMBER") //anyRequest().authenticated()는 모든 요청에 대해 인증된 사용자만 접근할 수 있도록 함
                 .antMatchers("/**").permitAll()
             .and()
                 .formLogin() //form기반으로 인증을 하도록 하고 로그인 정보는 기본적으로 HttpSession을 이용함. /login으로 접근하면 Spring Security에서 제공하는 로그인 form을 사용가능함
@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .logout() //로그아웃을 지원하는 메서드이며 기본적으로 /logout에 접근하면 Http 세션을 제거함
                 .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout")) //로그아웃의 기본 url인 /logout이 아닌 다른 url로 재정의함
-                .logoutSuccessUrl("/user/logout/result") //로그아웃 성공시에 이동되는 페이지이며 controller에서 url매핑이 되어있어야 함
+                .logoutSuccessUrl("/user/login") //로그아웃 성공시에 이동되는 페이지이며 controller에서 url매핑이 되어있어야 함
                 .invalidateHttpSession(true) //Http세션을 초기화하는 작업임
             .and()
                 .exceptionHandling().accessDeniedPage("/user/denied"); //예외가 발생했을 때 exceptionHandling() 메서드로 핸들링할 수 있음. 여기서는 접근권한이 없을 때, 로그인 페이지로 이동하도록 함

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>내정보</title>
@@ -7,5 +7,8 @@
 <body>
 <h1>내정보 확인 페이지입니다.</h1>
 <hr>
+아이디: <span th:text="${uId}"></span><br/>
+이메일: <span th:text="${email}"></span><br/>
+회원상태: <span th:text="${role}"></span>
 </body>
 </html>
