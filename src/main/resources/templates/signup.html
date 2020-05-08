@@ -31,61 +31,88 @@
                 <span id="pwCheck_msg" th:text="${valid_passwordCheck}"></span>
             </div>
             <a href="/" role="button" class="btn btn-secondary">취소</a>
-            <button type="submit" id="btn-signup" class="btn btn-primary">가입하기</button>
+            <button type="submit" id="btn-signup" disabled="disabled" class="btn btn-primary">가입하기</button>
         </form>
     </div>
 </div>
 <script src="/js/app/jquery-3.5.0.min.js"></script>
 <script>
     var validity = {
-        "id": false,
-        "email": false,
-        "pw": false
+        "uId":false,
+        "email":false,
+        "pwCheck":false
     };
-    var validateAll = {
-        init: function () {
-            if (validity["id"] && validity["email"] && validity["pw"]) {
-                $("#btn-signup").removeAttr("disabled");
-                console.log("success");
-            } else {
-                $("#btn-signup").attr("disabled", "disabled");
-                console.log("fail");
-            }
-        }
 
+    function validResult(id, msg, valid, focus=false) {
+        $("#" + id + "_msg").text(msg);
+        $("#" + id + "_msg").attr("style", "color:" + (valid ? "green" : "red"));
+        validity[id] = valid;
+        console.log(validity["uId"]);
+        console.log(validity["email"]);
+        console.log(validity["pwCheck"]);
+        if(focus) {
+            $("#" + id).focus();
+        }
+        validCheckAll();
     };
-    var index = {
+
+    function validCheckAll() {
+        if (validity["uId"] && validity["email"] && validity["pwCheck"]) {
+            console.log("success");
+            $("#btn-signup").removeAttr("disabled");
+        } else {
+            console.log("fail");
+            $("#btn-signup").attr("disabled", "disabled");
+        }
+    };
+
+    var signup = {
         init: function () {
             var _this = this;
+
             $("#uId").on("input", function () {
-                _this.checkUId();
-                console.log(validity["id"]);
-                validateAll.init();
+                var uId = $("#uId").val();
+                var idFormat= /\W/g;
+                var msg = "";
+                if (uId == "") {
+                    msg = "아이디를 입력해주세요.";
+                } else if (idFormat.test(uId)) {
+                    msg = "영문, 숫자, 언더바만 사용가능합니다.";
+                } else {
+                    _this.validateUId();
+                }
+                validResult("uId", msg, false);
             });
+
             $("#email").on("input", function () {
-                _this.checkEmail();
-                console.log(validity["email"]);
-                validateAll.init();
+                var email = $("#email").val();
+                var emailFormat = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+                var msg = "";
+                if (email == "") {
+                    msg = "이메일을 입력해주세요.";
+                } else if (!emailFormat.test(email)) {
+                    msg = "유효하지 않은 이메일입니다.";
+                } else {
+                    _this.validateEmail();
+                }
+                validResult("email", msg, false);
             });
+
             $("#pw").on("input", function () {
-                _this.checkPw();
-                console.log(validity["pw"]);
-                validateAll.init();
+                _this.validatePw();
             });
+
             $("#pwCheck").on("input", function () {
-                _this.checkPw();
-                console.log(validity["pw"]);
-                validateAll.init();
+                _this.validatePw();
             });
+
         },
-        checkUId: function () {
+        validateUId: function () {
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
+            var valid = false;
+            var msg = "";
             var uId = $("#uId").val();
-            if (uId == "") {
-                $("#uId_msg").text("아이디를 입력해주세요.").attr("style", "color:red");
-                validity["id"] = false;
-            }
 
             $.ajax({
                 type: "post",
@@ -97,28 +124,27 @@
                     xhr.setRequestHeader(header, token);
                 },
                 success: function (result) {
+                    console.log(result);
                     if (result == 0) {
-                        $("#uId_msg").text("이미 존재하는 아이디입니다.").attr("style", "color:red");
-                        validity["id"] = false;
-                    } else if(result == 1){
-                        $("#uId_msg").text("사용가능한 아이디입니다.").attr("style", "color:green");
-                        validity["id"] = true;
+                        msg = "이미 사용중인 아이디입니다.";
+                        $("#uId").focus();
+                    } else {
+                        msg = "사용 가능한 아이디입니다.";
+                        valid = true;
                     }
-                },fail: function (error) {
+                    validResult("uId", msg, valid, !valid);
+                },
+                fail: function (error) {
                     alert(error);
                 }
             });
         },
-        checkEmail: function () {
-            var validateEmail = "";
+        validateEmail: function () {
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
-            var emailCheck = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+            var valid = false;
+            var msg = "";
             var email = $("#email").val();
-            if (email == "") {
-                $("#email_msg").text("이메일을 입력해주세요.").attr("style", "color:red");
-                validity["email"] = false;
-            }
 
             $.ajax({
                 type: "post",
@@ -130,65 +156,41 @@
                     xhr.setRequestHeader(header, token);
                 },
                 success: function (result) {
-                    if (!emailCheck.test(email)) {
-                        $("#email_msg").text("이메일을 형식에 맞게 입력해주세요.").attr("style", "color:red");
-                        validity["email"] = false;
-                    }else{
-
                     if (result == 0) {
-                        $("#email_msg").text("이미 존재하는 이메일입니다.").attr("style", "color:red");
-                        validity["email"] = false;
-                    } else if(result==1){
-                        $("#email_msg").text("사용가능한 이메일입니다.").attr("style", "color:green");
-                        validity["email"] = true;
+                        msg = "이미 등록된 이메일입니다.";
+                        $("#email").focus();
+                    } else {
+                        msg = "사용 가능한 이메일입니다.";
+                        valid = true;
                     }
-                    }
-                },fail: function (error) {
+                    validResult("email", msg, valid, !valid);
+                },
+                fail: function (error) {
                     alert(error);
                 }
             });
         },
-        checkPw: function () {
-            var password = $("#pw").val();
-            var passwordCheck = $("#pwCheck").val();
-            var pwCheck = /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/;
+        validatePw: function () {
+            var pw = $("#pw").val();
+            var pwCheck = $("#pwCheck").val();
+            var pwFormat = /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/;
+            var valid = false;
+            var msg = "";
 
 
-            // if (password == "") {
-            //     $("#pwCheck_msg").text("비밀번호를 입력해주세요.").attr("style", "color:red");
-            //     validity["pw"] = false;
-            // } else if (passwordCheck == "") {
-            //     $("#pwCheck_msg").text("비밀번호 형식에 맞게 입력해주세요.").attr("style", "color:red");
-            //     validity["pw"] = false;
-            // } else if (!pwCheck.test(password)) {
-            //     $("#pwCheck_msg").text("비밀번호 확인을 입력해주세요.").attr("style", "color:red");
-            //     validity["pw"] = false;
-            // } else if (password != passwordCheck) {
-            //     $("#pwCheck_msg").text("비밀번호와 일치하지 않습니다.").attr("style", "color:red");
-            //     validity["pw"] = false;
-            // } else {
-            //     $("#pwCheck_msg").text("비밀번호와 일치합니다.").attr("style", "color:green");
-            //     validity["pw"] = true;
-            // }
-
-            if (!pwCheck.test(password)) {
-                $("#pwCheck_msg").text("비밀번호 형식에 맞게 입력해주세요.").attr("style", "color:red");
-                validity["pw"] = false;
-            } else if (password != passwordCheck) {
-                $("#pwCheck_msg").text("비밀번호와 일치하지 않습니다.").attr("style", "color:red");
-                validity["pw"] = false;
-            } else if (password == "") {
-                $("#pwCheck_msg").text("비밀번호를 입력해주세요.").attr("style", "color:red");
-                validity["pw"] = false;
+            if (!pwFormat.test(pw)) {
+                msg = "비밀번호 형식에 맞게 입력해주세요.";
+            } else if (pw != pwCheck) {
+                msg = "암호가 일치하지 않습니다.";
             } else {
-                $("#pwCheck_msg").text("비밀번호와 일치합니다.").attr("style", "color:green");
-                validity["pw"] = true;
+                msg = "암호가 일치합니다.";
+                valid = true;
             }
-
+            validResult("pwCheck", msg, valid)
         }
+
     };
-    index.init();
-    validateAll.init();
+    signup.init();
 </script>
 </body>
 </html>
