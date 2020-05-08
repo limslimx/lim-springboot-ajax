@@ -26,6 +26,7 @@ public class MemberDto {
     private String password;
 
     @NotBlank(message = "비밀번호 확인을 입력해주세요.")
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,20}", message = "비밀번호 양식에 맞게 작성해 주세요.")
     private String passwordCheck;
     private Role role;
     private LocalDateTime createdDate;
