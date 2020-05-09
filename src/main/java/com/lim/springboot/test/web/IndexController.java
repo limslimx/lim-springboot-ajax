@@ -10,4 +10,9 @@ public class IndexController {
     public String memberIndex() {
         return "member/index";
     }
+
+    @GetMapping("/test")
+    public String test() {
+        return "login2";
+    }
 }

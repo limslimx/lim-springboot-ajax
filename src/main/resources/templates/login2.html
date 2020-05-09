@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.6">
+    <title>Login</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/floating-labels/">
+    <link rel="stylesheet" type="text/css" href="/css/app/index.css">
+    <!-- Bootstrap core CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- Favicons -->
+    <meta name="msapplication-config" content="/docs/4.4/assets/img/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#563d7c">
+
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<form action="/user/login" method="post" class="form-signin">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <div class="text-center mb-4">
+        <img class="mb-4" src="/image/app/book.png" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 font-weight-normal">로그인</h1>
+    </div>
+
+    <div class="form-label-group">
+        <input type="text" id="uId" name="username" class="form-control" placeholder="아이디를 입력해주세요." required autofocus>
+        <label for="uId">아이디</label>
+    </div>
+
+    <div class="form-label-group">
+        <input type="password" id="pw" name="password" class="form-control" placeholder="비밀번호를 입력해주세요." required pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_-+=[]{}~?:;`|/]).{6,50}$">
+        <label for="pw">비밀번호</label>
+    </div>
+
+    <div>
+        <a type="button" href="/user/findId">아이디 찾기</a>
+        /
+        <a type="button" href="/user/findPw">비밀번호 찾기</a>
+    </div><br/>
+
+    <button type="submit" class="btn btn-lg btn-primary btn-block">로그인</button>
+    <a href="/user/signup" role="button" class="btn btn-lg btn-secondary btn-block">회원가입</a>
+    <p class="mt-5 mb-3 text-muted text-center">&copy; Book Crawling 2020</p>
+</form>
+</body>
+</html>

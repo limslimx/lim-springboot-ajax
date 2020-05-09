@@ -1,37 +1,71 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.6">
+    <title>SignUp</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/floating-labels/">
+    <link rel="stylesheet" type="text/css" href="/css/app/index.css">
+    <!-- Bootstrap core CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- Favicons -->
+    <meta name="msapplication-config" content="/docs/4.4/assets/img/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#563d7c">
+
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <title>회원가입 페이지</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<h1>회원 가입</h1>
-<hr>
+        <form th:action="@{/user/signup}" method="post" modelAttribute="memberDto" class="form-signin">
+            <div class="text-center mb-4">
+                <img class="mb-4" src="/image/app/book.png" alt="" width="72" height="72">
+                <h1 class="h3 mb-3 font-weight-normal">회원가입</h1>
+            </div>
 
-<div class="col-md-12">
-    <div class="col-md-4">
-        <form th:action="@{/user/signup}" method="post" modelAttribute="memberDto">
-            <div class="form-group">
+            <div class="form-label-group">
                 <input type="text" id="uId" name="uId" th:value="${memberDto.uId}" class="form-control" placeholder="아이디 입력해주세요.">
+                <label for="uId">아이디</label>
                 <span id="uId_msg" th:text="${valid_uId}"></span>
             </div>
-            <div class="form-group">
+            <div class="form-label-group">
                 <input type="text" id="email" name="email" th:value="${memberDto.email}" class="form-control" placeholder="이메일 입력해주세요.">
+                <label for="email">이메일</label>
                 <span id="email_msg" th:text="${valid_email}"></span>
             </div>
-            <div class="form-group">
+            <div class="form-label-group">
                 <input type="password" id="pw" name="password" class="form-control" placeholder="비밀번호 입력해주세요.">
+                <label for="pw">비밀번호</label>
                 <span id="pw_msg" th:text="${valid_password}"></span>
             </div>
-            <div class="form-group">
+            <div class="form-label-group">
                 <input type="password" id="pwCheck" name="passwordCheck" class="form-control" placeholder="비밀번호 입력해주세요.">
+                <label for="pwCheck">비밀번호 확인</label>
                 <span id="pwCheck_msg" th:text="${valid_passwordCheck}"></span>
             </div>
-            <a href="/" role="button" class="btn btn-secondary">취소</a>
-            <button type="submit" id="btn-signup" disabled="disabled" class="btn btn-primary">가입하기</button>
+            <button type="submit" id="btn-signup" disabled="disabled" class="btn btn-lg btn-primary btn-block">가입하기</button>
+            <a href="/user/login" role="button" class="btn btn-lg btn-secondary btn-block">취소</a>
         </form>
     </div>
 </div>

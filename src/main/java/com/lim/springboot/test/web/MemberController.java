@@ -7,6 +7,7 @@ import com.lim.springboot.test.web.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,6 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 @RequiredArgsConstructor
@@ -92,12 +92,28 @@ public class MemberController {
     //로그인 페이지
     @GetMapping("/user/login")
     public String dispLogin() {
-        return "/login";
+        return "login2";
+    }
+
+    //아이디 찾기 - form화면
+    @GetMapping("/user/findId")
+    public String findId() {
+        return "findId";
+    }
+
+    //아이디 찾기 - 중복확인 로직
+    @PostMapping("/user/findId")
+    public @ResponseBody Optional<String> findId(@RequestBody String email) {
+        Optional<String> id = memberService.findIdByEmail(email);
+        log.info(String.valueOf(id));
+        return id;
     }
 
     //로그인 결과 페이지
     @GetMapping("/user/login/result")
-    public String dispLoginResult() {
+    public String dispLoginResult(Principal principal, Model model) {
+        String name = principal.getName();
+        model.addAttribute("name", name);
         return "/loginSuccess";
     }
 

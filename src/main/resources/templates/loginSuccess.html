@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>로그인 성공</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
 <h1>로그인 성공!!</h1>
 <hr>
 <p>
-    <span sec:authentication="name"></span>님 환영합니다~
+    <span th:text="${name}"}></span>님 환영합니다~
 </p>
-<a th:href="@{'/user/info'}">내 정보</a>
-<a th:href="@{'/user/logout'}">로그아웃</a>
+<a type="button" class="btn btn-sm btn-info" th:href="@{'/user/info'}">내 정보</a>
+<a type="button" class="btn btn-sm btn-danger" th:href="@{'/user/logout'}">로그아웃</a>
 </body>
 </html>

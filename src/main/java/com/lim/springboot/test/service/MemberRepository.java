@@ -13,7 +13,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByuId(String uId);
 
     @Query("select m.uId from Member m where m.email=:email")
-    String findByUserEmail(@Param("email") String email);
+    Optional<String> findByUserEmail(@Param("email") String email);
 
     @Query("select count(m) from Member m where m.uId=:uId")
     int countMemberByUId(@Param("uId") String uId);

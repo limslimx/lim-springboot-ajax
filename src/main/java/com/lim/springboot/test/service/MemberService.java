@@ -71,4 +71,8 @@ public class MemberService implements UserDetailsService {
         }
         return validatorResult;
     }
+
+    public Optional<String> findIdByEmail(String email) {
+        return memberRepository.findByUserEmail(email);
+    }
 }
