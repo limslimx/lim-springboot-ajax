@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<h1>책 검색</h1>
+<form>
+    <label for="search">검색</label>
+    <input type="text" id="search">
+    <button type="button" id="btn-search">검색하기</button>
+</form>
+<p id="book_list"></p>
+
+<script
+        src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+        crossorigin="anonymous"></script>
+<script>
+    var index = {
+        init: function() {
+            var _this = this;
+            $("#btn-search").on("click", function() {
+                _this.searchBook();
+            })
+        },
+        searchBook: function() {
+            var query = $("#search").val();
+            console.log(query);
+
+            $.ajax({
+                type: "get",
+                url: "https://dapi.kakao.com/v3/search/book?target=title",
+                headers: { Authorization: "KakaoAK e79c10468f7c906eddad8b412e67ee11" },
+                data: { query: query}
+            }).done(function(result) {
+                var msg = "";
+                console.log(result);
+                console.log(result.documents[0]);
+                for(var i=0;i<result.documents.length;i++) {
+                    msg+="<a href='"+result.documents[i].url+"'+>"+result.documents[i].title+"</a><br/>";
+                    msg+=result.documents[i].authors[0]+"<br/>";
+                    msg+="<img src="+result.documents[i].thumbnail+"></img><hr/>";
+                }
+                $("#book_list").html(msg);
+
+            });
+        }
+    };
+    index.init();
+</script>
+</body>
+</html>
